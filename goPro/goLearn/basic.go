@@ -1,5 +1,5 @@
-// goPro project main.go
-package main
+// goPro project basic.go
+package goLearn
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ func needFloat(x float64) float64 {
 	return x * 0.1
 }
 
-func main() {
+func goLearn_basic() {
 	fmt.Println("Hello World!")
 	v := 42 // change me!
 	f := 3.14
