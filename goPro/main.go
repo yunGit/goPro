@@ -17,6 +17,12 @@ var (
 	z  = &vertex{1, 2} // 类型为 *vertex
 )
 
+func printSlice(s string, x []int) {
+	// len 长度，指已经被赋值过的最大下标+1
+	// cap 容量，指切片目前可容纳的最多元素个数
+	fmt.Printf("%s len=%d cap=%d %v\n", s, len(x), cap(x), x)
+}
+
 func main() {
 	// 指针，即间接引用或非直接引用
 	// go没有指针运算
@@ -44,6 +50,68 @@ func main() {
 	q.X = 1e9
 	fmt.Println(v)
 
-	// http://go-tour-zh.appspot.com/moretypes/5
+	// 结构体文法
 	fmt.Println(v1, v2, v3, *z)
+
+	// 数组
+	var a [2]string
+	a[0] = "Hello"
+	a[1] = "World"
+	fmt.Println(a[0], a[1])
+	fmt.Println(a)
+
+	// slice
+	// 一个slice会指向一个序列的值，并且包含了长度信息
+	// []T是一个元素类型为T的slice，与引用的区别即[]内为空
+	p1 := []int{2, 3, 5, 7, 11, 13}
+	fmt.Println("p1 == ", p1)
+
+	for i := 0; i < len(p1); i++ {
+		fmt.Printf("p1[%d] == %d\n", i, p1[i])
+	}
+
+	// slice切片
+	fmt.Println("p1[1:4] == ", p1[1:4])
+	// 	省略下标表示从0开始
+	fmt.Println("p1[:3] == ", p1[:3])
+	// 	省略上标表示到 len(s)结束
+	fmt.Println("p1[4:] == ", p1[4:])
+
+	// 构造slice
+	a1 := make([]int, 5)
+	printSlice("a1", a1)
+	b := make([]int, 0, 5)
+	printSlice("b", b)
+	// 数组或切片的引用来初始化切片
+	c := b[:2]
+	printSlice("c", c)
+	d := c[2:5]
+	printSlice("d", d)
+
+	printSlice("p1", p1)
+
+	// nil slice，slice 的零值是 nil
+	// 一个nil的slice长度和容量是0
+	var z []int
+	fmt.Println(z, len(z), cap(z))
+	if z == nil {
+		fmt.Println("nil!")
+	}
+
+	// 向slice添加元素
+	// append ， 结果是个包含原slice 所有元素加上新添加元素的slice
+	// append works on nil slice
+	z = append(z, 0)
+	printSlice("z", z)
+	// the slice grows as needed
+	z = append(z, 1)
+	printSlice("z", z)
+	// we can add more than one element at a time
+	z = append(z, 2, 3, 4)
+	printSlice("z", z)
+
+	// for 循环的range格式可以对 slice 或者 map进行迭代循环
+	for i, v := range z {
+		fmt.Printf("2**%d = %d\n", i, v)
+	}
 }
