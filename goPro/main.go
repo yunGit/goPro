@@ -3,10 +3,12 @@ package main
 
 import (
 	"fmt"
+	"strings"
+	//	"code.google.com/p/go-tour/wc"
 )
 
 type vertex struct {
-	X, Y int
+	X, Y float64
 }
 
 var (
@@ -17,10 +19,28 @@ var (
 	z  = &vertex{1, 2} // 类型为 *vertex
 )
 
+// map
+var m = map[string]vertex{
+	"Google": vertex{
+		556.3, -113.43,
+	},
+}
+
 func printSlice(s string, x []int) {
 	// len 长度，指已经被赋值过的最大下标+1
 	// cap 容量，指切片目前可容纳的最多元素个数
 	fmt.Printf("%s len=%d cap=%d %v\n", s, len(x), cap(x), x)
+}
+
+func WordCount(s string) map[string]int {
+
+	m := make(map[string]int)
+	var a = strings.Fields(s)
+	for i := 0; i < len(a); i++ {
+		v := m[a[i]]
+		m[a[i]] = v + 1
+	}
+	return m
 }
 
 func main() {
@@ -114,4 +134,29 @@ func main() {
 	for i, v := range z {
 		fmt.Printf("2**%d = %d\n", i, v)
 	}
+
+	// map
+	// 映射键到值，使用之前必须用make而不是new来创建；值为nil的map是空的，并且不能赋值
+	//	m = make(map[string]vertex)
+	// map文法
+	// map文法跟结构体文法相似，不过必须有键名
+	m["Bell Labs"] = vertex{
+		40.6, -73.3,
+	}
+	fmt.Println(m)
+	// 插入或修改map
+	m["answer"] = vertex{45, -43}
+	fmt.Println("The value:", m["answer"])
+	// delete删除元素
+	delete(m, "Bell Labs")
+	fmt.Println("The value:", m)
+
+	// 检测"Bell Labs“是否在m中，是则ok为true，否false；v1或为map的零值
+	v1, ok := m["Bell Labs"]
+	fmt.Println("The value:", v1, "Present?", ok)
+
+	// 测试 http://go-tour-zh.appspot.com/moretypes/19
+	//	wc.Test(WordCount)
+
+	// next http://go-tour-zh.appspot.com/moretypes/20
 }
