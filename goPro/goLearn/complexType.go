@@ -1,5 +1,5 @@
-// goPro project main.go
-package main
+// goPro project complexType.go
+package goLearn
 
 import (
 	"fmt"
