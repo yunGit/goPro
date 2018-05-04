@@ -16,6 +16,9 @@ func (v *Vertex) Abs() float64 {
 	return math.Sqrt(v.X*v.X + v.Y*v.Y)
 }
 
+// 接受者为指针修改接受者原始值
+func (v *Vertex) Scale() fl
+
 // 可以对保重的 任意 类型定义任意方法，而不仅仅针对结构体
 // 但是，不能对来自其他包的类型或基础类型定义方法
 type MyFloat float64
