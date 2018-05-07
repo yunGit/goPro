@@ -33,21 +33,36 @@ func (f MyFloat) Abs() float64 {
 	return float64(f)
 }
 
+type Abser interface {
+	Abs() float64
+}
+
 func main() {
 	fmt.Println("Hello world!")
 	// 方法
-	v := &Vertex{3, 4}
+	v := Vertex{3, 4}
 	// 结构体方法的调用
 	fmt.Println(v.Abs())
 
 	f := MyFloat(-math.Sqrt2)
 	fmt.Println(f.Abs())
 
-	// next http://go-tour-zh.appspot.com/methods/2
 	// 接受者为指针的方法
 	// 方法可以与命名类型或命名类型的指针关联
 	// 有两个原因需要使用指针接受者，首先避免在每个方法调用中拷贝值（如果值类型是大的结构体的话会更有效率）
 	// 其次，方法可以修改接受者指向的值
 	v.Scale(5)
 	fmt.Println(v, v.Abs())
+
+	// 接口，接口类型是由一组方法定义的集合
+	// 接口类型的值可以存放实现这些方法的任何值
+	var a Abser
+	a = f
+	fmt.Println(a.Abs())
+	a = &v
+	fmt.Println(a.Abs())
+	// a = v				// !! Error !!，Only *Vertex.Abs, not defined Vertex.Abs
+	// fmt.Println(a.Abs())
+
+	// next http://go-tour-zh.appspot.com/methods/5
 }
