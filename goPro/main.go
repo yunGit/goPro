@@ -4,6 +4,8 @@ package main
 import (
 	"fmt"
 	"math"
+	"os"
+	"strconv"
 )
 
 type Vertex struct {
@@ -33,8 +35,47 @@ func (f MyFloat) Abs() float64 {
 	return float64(f)
 }
 
+// 接口
 type Abser interface {
 	Abs() float64
+}
+
+// 隐式接口
+type Reader interface {
+	Read(b []byte) (n int, err error)
+}
+
+type Writer interface {
+	Write(b []byte) (n int, err error)
+}
+
+type ReaderWriter interface {
+	Reader
+	Writer
+}
+
+// Stringer, 存在于fmt中的接口，用来描述自己的类型
+type Person struct {
+	Name string
+	Age  int
+}
+
+func (p Person) string() string {
+	return fmt.Sprintf("%v (%v years)", p.Name, p.Age)
+}
+
+type ErrNegativeSqrt float64
+
+func (e ErrNegativeSqrt) Error() string {
+	s := fmt.Sprint(float64(e))
+
+	return fmt.Sprintf("Cannot Sqrt negative number:%s", s)
+}
+func Sqrt(n float64) (float64, error) {
+	if n < 0 {
+		return 0, ErrNegativeSqrt(n)
+	}
+	return 0, nil
 }
 
 func main() {
@@ -64,5 +105,33 @@ func main() {
 	// a = v				// !! Error !!，Only *Vertex.Abs, not defined Vertex.Abs
 	// fmt.Println(a.Abs())
 
-	// next http://go-tour-zh.appspot.com/methods/5
+	// 隐式接口，隐式接口解耦了实现接口的包和定义接口的包：互不依赖
+	// 因此也就无需再每一个实现上增加新的接口名称，这样同时也鼓励了明确的接口定义
+	var w Writer
+	// os.stdout 实现了 writer
+	w = os.Stdout
+	fmt.Fprintf(w, "hello, writer\n")
+
+	// Stringer
+	y := Person{"arthur dent", 42}
+	z := Person{"zaphod beeblebrox", 90011}
+	fmt.Println(y, z)
+
+	// Error,错误
+	// 使用error值来表示错误状态
+	// 与fmt.stringer类似，‘error’类型是一个内建接口
+	//	type error interface {
+	//		Error() string
+	//	}
+	// 通常函数会返回一个error值，调用的他的代码应当判断这个错误是否等于'nil'，来进行错误处理
+	ii, err := strconv.Atoi("42")
+	if err != nil {
+		fmt.Printf("couldn't convert number: %v \n", err)
+	}
+	fmt.Println("Converted integer:", ii)
+	// 自定义错误值
+	fmt.Println(Sqrt(2))
+	fmt.Println(Sqrt(-2))
+
+	// next http://go-tour-zh.appspot.com/methods/10
 }
