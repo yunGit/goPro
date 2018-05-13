@@ -3,9 +3,11 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"math"
 	"os"
 	"strconv"
+	"strings"
 )
 
 type Vertex struct {
@@ -60,7 +62,7 @@ type Person struct {
 	Age  int
 }
 
-func (p Person) string() string {
+func (p Person) String() string {
 	return fmt.Sprintf("%v (%v years)", p.Name, p.Age)
 }
 
@@ -76,6 +78,23 @@ func Sqrt(n float64) (float64, error) {
 		return 0, ErrNegativeSqrt(n)
 	}
 	return 0, nil
+}
+
+type IPAddr [4]byte
+
+func (ip IPAddr) String() string {
+	return fmt.Sprintf("%d,%d,%d", ip[0], ip[1], ip[2])
+}
+
+type MyReader struct{}
+
+func (r MyReader) Read(b []byte) (int, error) {
+	var n int
+	for i := 0; i < len(b); i++ {
+		b[i] = 'A'
+		n++
+	}
+	return n, nil
 }
 
 func main() {
@@ -133,5 +152,30 @@ func main() {
 	fmt.Println(Sqrt(2))
 	fmt.Println(Sqrt(-2))
 
-	// next http://go-tour-zh.appspot.com/methods/10
+	ip := IPAddr{127, 0, 0, 1}
+	fmt.Println(ip)
+
+	// Reader 接口
+	//	 func (T) Read(b []byte) (n int, err error)
+	r := strings.NewReader("Hello World!")
+	b := make([]byte, 8)
+	for {
+		n, err := r.Read(b)
+		fmt.Printf("n = %v err = %v b = %v\n", n, err, b)
+		fmt.Printf("b[:n] = %q\n", b[:n])
+		if err == io.EOF {
+			break
+		}
+	}
+	// 自己定义Read
+	//	myReader := MyReader{}
+	//	bb := make([]byte, 8)
+	//	for true {
+	//		n, err := myReader.Read(bb)
+	//		fmt.Printf("n = %v err = %v bb = %v\n", n, err, bb)
+	//		fmt.Printf("bb[:n] = %q\n", bb[:n])
+	//		if err == io.EOF {
+	//			break
+	//		}
+	//	}
 }
